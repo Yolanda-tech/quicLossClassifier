@@ -1,0 +1,91 @@
+lastTimes:
+{"Bagging": 0.8700170516967773, "DecisionTree": 0.0908958911895752, "NaiveBayesGaussianNB": 0.007246971130371094, "RandomForest": 0.45519208908081055, "AdaBoost": 0.17638111114501953}
+accuracys:
+{"Bagging": [0.9824161510908499, 0.9376744186046512, 0.9936035355003779], "DecisionTree": [0.9422942736195749, 0.9388372093023256, 0.9431586904692679], "NaiveBayesGaussianNB": [0.8132762711075964, 0.8123255813953488, 0.8135139849973833], "RandomForest": [0.9436200400055822, 0.9416279069767441, 0.9441181601442112], "AdaBoost": [0.9155696143647951, 0.9195348837209303, 0.9145781240914113]}
+aucValues:
+{"Bagging": 0.9631297992657958, "DecisionTree": 0.9697566395123555, "NaiveBayesGaussianNB": 0.862236650124201, "RandomForest": 0.9779537667652727, "AdaBoost": 0.9523012004286919}
+scores:
+Bagging:
+              precision    recall  f1-score   support
+
+           0     0.9486    0.9697    0.9591      6477
+           1     0.9010    0.8398    0.8693      2123
+
+   micro avg     0.9377    0.9377    0.9377      8600
+   macro avg     0.9248    0.9048    0.9142      8600
+weighted avg     0.9369    0.9377    0.9369      8600
+
+DecisionTree:
+              precision    recall  f1-score   support
+
+           0     0.9485    0.9716    0.9599      6477
+           1     0.9064    0.8389    0.8713      2123
+
+   micro avg     0.9388    0.9388    0.9388      8600
+   macro avg     0.9274    0.9052    0.9156      8600
+weighted avg     0.9381    0.9388    0.9380      8600
+
+NaiveBayesGaussianNB:
+              precision    recall  f1-score   support
+
+           0     0.8151    0.9711    0.8863      6477
+           1     0.7882    0.3278    0.4631      2123
+
+   micro avg     0.8123    0.8123    0.8123      8600
+   macro avg     0.8017    0.6495    0.6747      8600
+weighted avg     0.8085    0.8123    0.7818      8600
+
+RandomForest:
+              precision    recall  f1-score   support
+
+           0     0.9512    0.9724    0.9617      6477
+           1     0.9096    0.8479    0.8776      2123
+
+   micro avg     0.9416    0.9416    0.9416      8600
+   macro avg     0.9304    0.9101    0.9196      8600
+weighted avg     0.9409    0.9416    0.9409      8600
+
+AdaBoost:
+              precision    recall  f1-score   support
+
+           0     0.9279    0.9683    0.9477      6477
+           1     0.8886    0.7706    0.8254      2123
+
+   micro avg     0.9195    0.9195    0.9195      8600
+   macro avg     0.9083    0.8695    0.8866      8600
+weighted avg     0.9182    0.9195    0.9175      8600
+
+fis:
+DecisionTree:
+                   feature  importance
+0  ConstantLostPacketCount    0.469249
+2           LostDistWeight    0.402667
+6                   Rlmrtt    0.029123
+4                  inRcvry    0.027655
+3          LostPacketCount    0.023538
+1                LostCount    0.017852
+7                   Rlsrtt    0.014964
+8                   Rsprtt    0.012133
+5                     inSS    0.002818
+RandomForest:
+                   feature  importance
+2           LostDistWeight    0.445786
+0  ConstantLostPacketCount    0.298357
+1                LostCount    0.142666
+6                   Rlmrtt    0.033076
+3          LostPacketCount    0.027555
+4                  inRcvry    0.021095
+7                   Rlsrtt    0.016142
+8                   Rsprtt    0.013032
+5                     inSS    0.002291
+AdaBoost:
+                   feature  importance
+0  ConstantLostPacketCount         0.2
+2           LostDistWeight         0.2
+3          LostPacketCount         0.2
+1                LostCount         0.1
+4                  inRcvry         0.1
+6                   Rlmrtt         0.1
+7                   Rlsrtt         0.1
+5                     inSS         0.0
+8                   Rsprtt         0.0
