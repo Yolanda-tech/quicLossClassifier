@@ -1,0 +1,40 @@
+main.o: main.cc /usr/local/Cellar/jsoncpp/1.8.4/include/json/json.h \
+  /usr/local/Cellar/jsoncpp/1.8.4/include/json/autolink.h \
+  /usr/local/Cellar/jsoncpp/1.8.4/include/json/config.h \
+  /usr/local/Cellar/jsoncpp/1.8.4/include/json/version.h \
+  /usr/local/Cellar/jsoncpp/1.8.4/include/json/value.h \
+  /usr/local/Cellar/jsoncpp/1.8.4/include/json/forwards.h \
+  /usr/local/Cellar/jsoncpp/1.8.4/include/json/reader.h \
+  /usr/local/Cellar/jsoncpp/1.8.4/include/json/features.h \
+  /usr/local/Cellar/jsoncpp/1.8.4/include/json/writer.h DesionTree.h \
+  JsonParser.h RandomForest.h
+JsonParser.o: JsonParser.cc JsonParser.h \
+  /usr/local/Cellar/jsoncpp/1.8.4/include/json/json.h \
+  /usr/local/Cellar/jsoncpp/1.8.4/include/json/autolink.h \
+  /usr/local/Cellar/jsoncpp/1.8.4/include/json/config.h \
+  /usr/local/Cellar/jsoncpp/1.8.4/include/json/version.h \
+  /usr/local/Cellar/jsoncpp/1.8.4/include/json/value.h \
+  /usr/local/Cellar/jsoncpp/1.8.4/include/json/forwards.h \
+  /usr/local/Cellar/jsoncpp/1.8.4/include/json/reader.h \
+  /usr/local/Cellar/jsoncpp/1.8.4/include/json/features.h \
+  /usr/local/Cellar/jsoncpp/1.8.4/include/json/writer.h
+RandomForest.o: RandomForest.cc RandomForest.h DesionTree.h \
+  /usr/local/Cellar/jsoncpp/1.8.4/include/json/json.h \
+  /usr/local/Cellar/jsoncpp/1.8.4/include/json/autolink.h \
+  /usr/local/Cellar/jsoncpp/1.8.4/include/json/config.h \
+  /usr/local/Cellar/jsoncpp/1.8.4/include/json/version.h \
+  /usr/local/Cellar/jsoncpp/1.8.4/include/json/value.h \
+  /usr/local/Cellar/jsoncpp/1.8.4/include/json/forwards.h \
+  /usr/local/Cellar/jsoncpp/1.8.4/include/json/reader.h \
+  /usr/local/Cellar/jsoncpp/1.8.4/include/json/features.h \
+  /usr/local/Cellar/jsoncpp/1.8.4/include/json/writer.h JsonParser.h
+DesionTree.o: DesionTree.cc DesionTree.h \
+  /usr/local/Cellar/jsoncpp/1.8.4/include/json/json.h \
+  /usr/local/Cellar/jsoncpp/1.8.4/include/json/autolink.h \
+  /usr/local/Cellar/jsoncpp/1.8.4/include/json/config.h \
+  /usr/local/Cellar/jsoncpp/1.8.4/include/json/version.h \
+  /usr/local/Cellar/jsoncpp/1.8.4/include/json/value.h \
+  /usr/local/Cellar/jsoncpp/1.8.4/include/json/forwards.h \
+  /usr/local/Cellar/jsoncpp/1.8.4/include/json/reader.h \
+  /usr/local/Cellar/jsoncpp/1.8.4/include/json/features.h \
+  /usr/local/Cellar/jsoncpp/1.8.4/include/json/writer.h JsonParser.h
