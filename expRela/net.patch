@@ -1,0 +1,837 @@
+Only in net_origin: .DS_Store
+diff -bBr net_origin/BUILD.gn net_log_classifier/BUILD.gn
+97a98
+>   
+393a395
+>     # "//third_party/jsoncpp:jsoncpp",
+1167a1170,1175
+>       "third_party/quic/core/congestion_control/loss_classify/random_forest/decision_tree.cc",
+>       "third_party/quic/core/congestion_control/loss_classify/random_forest/decision_tree.h",
+>       "third_party/quic/core/congestion_control/loss_classify/random_forest/json_parser.cc",
+>       "third_party/quic/core/congestion_control/loss_classify/random_forest/json_parser.h",
+>       "third_party/quic/core/congestion_control/loss_classify/random_forest/random_forest.cc",
+>       "third_party/quic/core/congestion_control/loss_classify/random_forest/random_forest.h",
+2012a2021
+>   # cflags += ["-ljsoncpp"]
+diff -bBr net_origin/DEPS net_log_classifier/DEPS
+74a75,87
+>   ],
+> 
+>   
+>   "decision_tree.cc": [
+>     #"+third_party/jsoncpp/source/include/json/json.h",
+>   ],
+> 
+>   "random_forest.cc": [
+>     #"+third_party/jsoncpp/source/include/json/json.h",
+>   ],
+> 
+>   "json_parser.cc": [
+>     #"+third_party/jsoncpp/source/include/json/json.h",
+diff -bBr net_origin/third_party/quic/core/congestion_control/bbr_sender.cc net_log_classifier/third_party/quic/core/congestion_control/bbr_sender.cc
+153a154,161
+> /////class
+> void BbrSender::SetLossTypeIsCong(bool is_cong) {
+>   is_cong_ = is_cong;
+> }
+> bool BbrSender::IsLossTypeCong() {
+>   return is_cong_;
+> }
+> 
+diff -bBr net_origin/third_party/quic/core/congestion_control/bbr_sender.h net_log_classifier/third_party/quic/core/congestion_control/bbr_sender.h
+103a104,106
+>   void SetLossTypeIsCong(bool is_cong) override;/////class
+>   bool IsLossTypeCong() override;  
+> 
+401a405,406
+> 
+>   bool is_cong_;/////class
+diff -bBr net_origin/third_party/quic/core/congestion_control/general_loss_algorithm.cc net_log_classifier/third_party/quic/core/congestion_control/general_loss_algorithm.cc
+181a182,187
+>     QUIC_VLOG(-10) << "LostPacketNum:";
+>     LostPacketVector packets_lost_(packets_lost->begin(), packets_lost->end());
+>     for (const LostPacket& packet : packets_lost_) {
+>       QUIC_VLOG(-10) << packet.packet_number << ";";
+>     }
+>     QUIC_VLOG(-10) << "LostPacketCount:" << packets_lost->size();
+Only in net_log_classifier/third_party/quic/core/congestion_control: loss_classify
+diff -bBr net_origin/third_party/quic/core/congestion_control/send_algorithm_interface.h net_log_classifier/third_party/quic/core/congestion_control/send_algorithm_interface.h
+141a142,144
+> 
+>   virtual void SetLossTypeIsCong(bool is_cong) = 0;/////class
+>   virtual bool IsLossTypeCong() = 0;
+diff -bBr net_origin/third_party/quic/core/congestion_control/tcp_cubic_sender_bytes.cc net_log_classifier/third_party/quic/core/congestion_control/tcp_cubic_sender_bytes.cc
+226a227,234
+> /////class
+> void TcpCubicSenderBytes::SetLossTypeIsCong(bool is_cong) {
+>   is_cong_ = is_cong;
+> }
+> bool TcpCubicSenderBytes::IsLossTypeCong() {
+>   return is_cong_;
+> }
+> 
+300a309
+>   QUIC_VLOG(-10) << "largest_sent_at_last_cutback_:" << largest_sent_at_last_cutback_;
+321a331
+>   QUIC_VLOG(-10) << "no_prr_:" << no_prr_;
+333a344
+>     QUIC_VLOG(-10) << "reno_:" << reno_;
+335a347
+>     QUIC_VLOG(-10) << "in cubic";
+diff -bBr net_origin/third_party/quic/core/congestion_control/tcp_cubic_sender_bytes.h net_log_classifier/third_party/quic/core/congestion_control/tcp_cubic_sender_bytes.h
+47a48,50
+>   void SetLossTypeIsCong(bool is_cong) override;/////class
+>   bool IsLossTypeCong() override;
+> 
+168a172,173
+> 
+>   bool is_cong_;/////class
+diff -bBr net_origin/third_party/quic/core/quic_connection.cc net_log_classifier/third_party/quic/core/quic_connection.cc
+822a823
+>   QUIC_VLOG(-10) << "--IN QuicConnection::OnPacketHeader--";
+927a929
+>   QUIC_VLOG(-10) << "--QuicConnection::OnAckFrameStart--";
+1711a1714
+>   QUIC_VLOG(-10) << "--IN QuicConnection::ProcessUdpPacket--";
+1717a1721
+>     QUIC_VLOG(-10) << "--DEBUG_VISITOR IS NOT NULL, DO OnPacketReceived IN ProcessUdpPacket--";
+1768a1773
+>         QUIC_VLOG(-10) << "--DEBUG_VISITOR IS NOT NULL, DO OnUndecryptablePacket IN ProcessUdpPacket--";
+diff -bBr net_origin/third_party/quic/core/quic_dispatcher.cc net_log_classifier/third_party/quic/core/quic_dispatcher.cc
+322a323
+>   QUIC_VLOG(-10) << "--IN QuicDispatcher::OnUnauthenticatedPublicHeader--";
+345a347
+>     QUIC_VLOG(-10) << "--DO it->second->ProcessUdpPacket--";
+830a833
+>   QUIC_VLOG(-10) << "--QuicDispatcher::OnPacketHeader--";
+846a850
+>   QUIC_VLOG(-10) << "--QuicDispatcher::OnAckFrameStart--";
+diff -bBr net_origin/third_party/quic/core/quic_framer.cc net_log_classifier/third_party/quic/core/quic_framer.cc
+1371a1372
+>   QUIC_VLOG(-10) << "--IN QuicFramer::ProcessPacket--";
+1414a1416
+>     QUIC_VLOG(-10) << "--DO ProcessVersionNegotiationPacket--";
+1417a1420
+>     QUIC_VLOG(-10) << "--DO ProcessPublicResetPacket--";
+1423a1427
+>       QUIC_VLOG(-10) << "--DO small ProcessIetfDataPacket--";
+1426a1431
+>       QUIC_VLOG(-10) << "--DO small ProcessDataPacket--";
+1431a1437
+>       QUIC_VLOG(-10) << "--DO ProcessIetfDataPacket--";
+1434a1441
+>       QUIC_VLOG(-10) << "--DO ProcessDataPacket--";
+1610a1618,1619
+>   QUIC_VLOG(-10) << "--IN QuicFramer::ProcessDataPacket--";
+>   QUIC_VLOG(-10) << "--ProcessUnauthenticatedHeader--";
+1619a1629
+>   QUIC_VLOG(-10) << "--DecryptPayload--";
+1633a1644
+>   QUIC_VLOG(-10) << "--visitor_->OnPacketHeader--";
+1638a1650
+>   QUIC_VLOG(-10) << "--packet.length() > kMaxPacketSize--";
+1644a1657
+>   QUIC_VLOG(-10) << "--ProcessFrameData--";
+1653a1667
+>   QUIC_VLOG(-10) << "--visitor_->OnPacketComplete();--";
+2256a2271
+>   QUIC_VLOG(-10) << "--QuicFramer::ProcessFrameData--";
+2903a2919
+>   QUIC_VLOG(-10) << "--QuicFramer::ProcessAckFrame--";
+diff -bBr net_origin/third_party/quic/core/quic_sent_packet_manager.cc net_log_classifier/third_party/quic/core/quic_sent_packet_manager.cc
+42a43,44
+> static const size_t MAXDIST = 100;/////class
+> 
+262a265,279
+> /////loss
+> bool QuicSentPacketManager::LossTypeIsCong(std::vector<double> predictVector){
+>   //double predictArr[] = {10, 2, 0.6000, 7, 1, 0, 1.0094, 0.9699, 0.9957};
+>   //int size = sizeof(predictArr) / sizeof(double);
+>   //std::vector<double> tmpv(predictArr,predictArr+size);
+>   if(predictVector.size()<9){
+>     return true;
+>   }
+>   std::vector<std::vector<double>> predictMat = std::vector<std::vector<double>>(1,predictVector);
+>   RandomForest forest;
+>   QUIC_VLOG(-10) << "the inside forest_ tree size is:" << forest.trees.size();
+>   bool lossTypeIsCong = forest.predictIsCong(predictMat);
+>   return lossTypeIsCong;
+> }
+> 
+272a290,294
+>   
+>   QUIC_VLOG(-10) << "--QuicSentPacketManager::PostProcessAfterMarkingPacketHandled--";
+>   
+>   predict_vector_.clear();/////class
+> 
+277a300,340
+>   QUIC_VLOG(-16) << "ackReceiveTime:" << ack_receive_time.ToDebuggingValue() << ";"
+> 		 << "CongWin:" << GetCongestionWindowInBytes() << ";" 
+>                  << "BW:" << send_algorithm_->BandwidthEstimate().ToKBytesPerSecond() << ";" 
+>                  << "smoothRTT:" << rtt_stats_.smoothed_rtt().ToMicroseconds() << ";" 
+>                  << "preRTT:" << rtt_stats_.previous_srtt().ToMicroseconds() << ";"
+>                  << "latestRTT:" << rtt_stats_.latest_rtt().ToMicroseconds() << ";"
+>                  << "minRTT:" << rtt_stats_.min_rtt().ToMicroseconds() << ";"
+>                  << "loss:" << stats_->packets_lost << ";" 
+>                  << "retransmit:" << stats_->packets_retransmitted << ";"
+>                  << "sent:"  << stats_->packets_sent << ";"  
+>                  << "inSS:" << send_algorithm_->InSlowStart() << ";"
+>                  << "inRcvry:" << send_algorithm_->InRecovery();
+> 
+>   /////class
+>   int inRcvry = (send_algorithm_->InRecovery())?1:0;
+>   int inSS = (send_algorithm_->InSlowStart())?1:0;
+> 
+>   int64_t smoothRTT = rtt_stats_.smoothed_rtt().ToMicroseconds();
+>   int64_t preRTT = rtt_stats_.previous_srtt().ToMicroseconds();
+>   int64_t minRTT = rtt_stats_.min_rtt().ToMicroseconds();
+>   int64_t latestRTT = rtt_stats_.latest_rtt().ToMicroseconds();
+> 
+>   double Rlmrtt = latestRTT/(double)minRTT;
+>   double Rlsrtt = latestRTT/(double)smoothRTT;
+>   double Rsprtt = smoothRTT/(double)preRTT;
+> 
+>   predict_vector_.push_back(inRcvry);
+>   predict_vector_.push_back(inSS);
+>   predict_vector_.push_back(Rlmrtt);
+>   predict_vector_.push_back(Rlsrtt);
+>   predict_vector_.push_back(Rsprtt);
+> 
+> 
+>   /////class/////loss
+>   bool lossTypeIsCong = LossTypeIsCong(predict_vector_);
+>   send_algorithm_->SetLossTypeIsCong(lossTypeIsCong);
+>  
+>   if(packets_lost_.size()){ 
+>     QUIC_VLOG(-16) << "lossTypeIsCong: " << lossTypeIsCong;
+>   }
+> 
+326a390
+>   QUIC_VLOG(-10) << "using_pacing_:" << using_pacing_;
+388a453,454
+>   
+>   QUIC_VLOG(-10) << "transmission_type: " << QuicUtils::TransmissionTypeToString(transmission_type);
+656a723,724
+>      
+>       QUIC_VLOG(-10) << "--OnRetransTimeout--";
+816a885,914
+>   QUIC_VLOG(-15) << "LostPacketNum:";
+>   for (const LostPacket& packet : packets_lost_) {
+>     QUIC_VLOG(-15) << packet.packet_number << ";";
+>   }
+> 
+>   /////class
+>   size_t lostDistTmp;
+>   if (packets_lost_.empty()){
+>     constant_packets_lost_ = 0;
+>     lost_count_ = 0;
+>     lost_dist_ += 1;
+>   }
+>   else{
+>     QUIC_VLOG(-16) << "LostPacketCount:" << packets_lost_.size();
+>     constant_packets_lost_ += packets_lost_.size();
+>     if(lost_count_ == 0){
+>       last_lost_dist_ = lost_dist_;            
+>     }
+>     lostDistTmp = min(last_lost_dist_, MAXDIST);
+>     lost_count_ += 1;
+>     lost_dist_ = 0;
+> 
+>     double lostDistWeight = lostDistTmp/pow(lost_count_,4.0/3)/sqrt((double)packets_lost_.size());
+>     predict_vector_.push_back(constant_packets_lost_);
+>     predict_vector_.push_back(lost_count_);
+>     predict_vector_.push_back(lostDistWeight);
+>     predict_vector_.push_back(packets_lost_.size());
+>   }
+>   QUIC_VLOG(-16) << "ConstantLostPacketCount:" << constant_packets_lost_;
+>   
+1124a1223,1224
+> 
+>     QUIC_VLOG(-10) << "--Got an ack for packet " << acked_packet.packet_number;
+1143a1244,1250
+>   
+>   QUIC_VLOG(-10) << "PacketAckedNum:";
+>   for (AckedPacket& acked_packet : packets_acked_) {
+>     QUIC_VLOG(-10) << acked_packet.packet_number << ";";
+>   }
+>   QUIC_VLOG(-16) << "PacketAckedCount:" << packets_acked_.size();
+>   
+diff -bBr net_origin/third_party/quic/core/quic_sent_packet_manager.h net_log_classifier/third_party/quic/core/quic_sent_packet_manager.h
+31c31
+< 
+---
+> #include "net/third_party/quic/core/congestion_control/loss_classify/random_forest/random_forest.h"/////loss
+452a453,456
+>   /////loss
+>   // classify whether the loss type is deu to congestion using random forest.
+>   bool LossTypeIsCong(std::vector<double> predict_vector);
+> 
+578a583,592
+> 
+>   /////loss
+>   RandomForest forest_;
+> 
+>   /////class
+>   size_t constant_packets_lost_;
+>   size_t lost_count_;
+>   size_t lost_dist_;
+>   size_t last_lost_dist_;
+>   std::vector<double> predict_vector_;
+diff -bBr net_origin/third_party/quic/tools/quic_simple_dispatcher.cc net_log_classifier/third_party/quic/tools/quic_simple_dispatcher.cc
+53a54
+>   QUIC_VLOG(-10) << "--CreateQuicSession in QuicSimpleDispatcher--";
+63a65
+>   QUIC_VLOG(-16) << "Time:" << session->connection()->clock()->WallNow().ToUNIXSeconds();
+Only in net_origin/tools: .DS_Store
+diff -bBr net_origin/tools/quic/certs/out/01.pem net_log_classifier/tools/quic/certs/out/01.pem
+8,9c8,9
+<             Not Before: Feb 19 07:03:58 2019 GMT
+<             Not After : Feb 22 07:03:58 2019 GMT
+---
+>             Not Before: Mar 25 09:26:06 2019 GMT
+>             Not After : Mar 28 09:26:06 2019 GMT
+15,32c15,32
+<                     00:c6:bd:1c:24:ea:10:3b:42:cb:30:17:62:8b:73:
+<                     db:2c:28:a4:99:ff:bd:e4:3e:9e:9d:09:11:4c:4e:
+<                     c2:b1:cd:21:5a:30:4d:e5:73:ab:89:38:f7:fd:ed:
+<                     9e:4c:45:f6:69:b6:cc:91:a9:4d:7a:2d:50:c1:a1:
+<                     ec:59:da:9f:a8:75:02:1c:b8:55:73:4c:79:03:4e:
+<                     35:b2:ab:9c:98:90:64:4e:7a:f1:0c:a1:3c:36:11:
+<                     da:51:0e:e5:b7:fc:9b:6b:4d:c0:66:64:dc:9b:3d:
+<                     51:21:d5:75:ff:07:7a:93:60:ab:22:6e:97:05:e3:
+<                     4c:a9:f9:43:76:65:f2:be:15:03:ea:ce:87:ee:10:
+<                     08:67:11:95:7f:97:08:ff:59:5b:9e:ca:e4:88:11:
+<                     05:47:93:b2:ce:06:83:1c:fe:35:46:06:c5:ec:b1:
+<                     ee:92:0d:ed:b9:47:6a:c1:d6:6f:8e:20:1e:ea:23:
+<                     ed:44:4d:03:0f:68:fe:79:64:12:dd:cb:0e:1e:b4:
+<                     d7:26:5c:ea:e5:c8:13:67:7a:cb:63:2a:e7:0e:2e:
+<                     68:b0:52:d9:d7:fb:b1:3f:81:a3:1c:2b:0f:c0:c2:
+<                     b0:39:30:29:19:fb:d9:72:a0:55:76:30:e9:0a:76:
+<                     f2:de:a8:88:87:eb:43:86:13:16:98:ae:6a:67:33:
+<                     b5:29
+---
+>                     00:c3:22:ff:ea:54:0c:97:3e:c7:46:9a:f2:85:b7:
+>                     e1:ea:46:b1:f1:71:ce:09:30:eb:e3:4f:0d:c2:bd:
+>                     18:3c:73:5e:53:bf:2b:d7:97:59:df:58:cf:12:6e:
+>                     bc:20:15:f4:b8:b8:61:40:db:35:4b:cd:61:bf:d2:
+>                     53:dd:90:83:0d:3c:cd:34:55:8e:a1:9f:9f:0e:04:
+>                     75:bf:9c:a0:0b:3d:b2:aa:c6:15:c2:1b:6e:6f:fc:
+>                     93:c4:81:7a:94:b8:aa:6a:11:57:5a:7f:8f:66:b3:
+>                     97:03:ff:01:aa:7a:0c:50:e8:fa:dc:a8:be:b9:9a:
+>                     74:26:55:9f:1d:c8:d7:a3:5a:cc:25:cb:89:bd:82:
+>                     00:15:14:75:77:12:8a:93:00:14:ae:f4:69:80:b8:
+>                     cc:13:b8:f6:7a:21:eb:55:87:59:c0:1c:01:d1:6e:
+>                     7e:6e:8b:85:fe:c3:0a:1c:8e:f1:9d:0c:6e:6b:ae:
+>                     b8:0a:d2:bc:3b:16:de:9a:73:d8:81:38:42:2d:33:
+>                     46:3d:fc:87:d2:7e:5e:37:54:a5:97:c2:7b:8e:5b:
+>                     3a:65:05:e1:4b:24:a7:a7:bf:2a:0e:d8:85:b9:7c:
+>                     db:cf:30:bb:96:59:4b:57:40:00:9c:06:2a:1b:b8:
+>                     fe:d6:61:f9:be:28:d5:86:e5:e9:8a:95:f8:d2:d7:
+>                     64:05
+38c38
+<                 2E:19:C9:47:05:18:65:C7:C3:66:40:27:D2:82:EC:67:09:B4:2D:83
+---
+>                 52:AB:83:3E:BF:10:49:36:26:8A:8B:F6:FD:98:F9:A1:C3:8D:CD:66
+40c40
+<                 keyid:00:E5:6A:E3:D7:EE:A6:53:1A:F5:2D:6D:D5:54:F0:A5:D8:6E:32:7D
+---
+>                 keyid:72:A4:E5:F4:C2:7D:1F:83:72:A3:B0:62:37:EF:86:1C:F6:0F:B8:D1
+47,61c47,61
+<          34:19:b3:da:d1:d8:47:5a:04:8d:9d:ce:63:33:2e:d4:25:7c:
+<          d1:54:c3:40:a1:a5:c6:17:e9:eb:73:9a:b0:a8:2c:98:7f:75:
+<          1b:f4:22:9d:b5:87:70:f8:1f:03:4b:5f:15:1f:10:7a:17:67:
+<          21:b1:5c:a9:50:05:a1:fe:4c:f2:e7:0d:75:70:3d:ac:8a:80:
+<          a7:85:a0:12:5d:ff:b2:2b:63:4d:df:8b:de:8d:d5:9f:d5:e4:
+<          b9:72:d7:4e:34:c2:b4:03:52:8e:55:47:9d:68:1a:3e:48:e7:
+<          d8:f5:bb:33:d6:c9:6a:89:6c:5a:83:ce:6a:ed:05:cd:75:53:
+<          b9:1a:8f:e1:49:54:66:8d:78:eb:04:fb:ad:7e:26:cd:8b:27:
+<          be:73:78:bb:24:57:dd:a6:80:c7:bb:fa:14:41:9c:56:6c:df:
+<          cc:31:27:16:d4:c6:62:cc:0c:c6:5c:46:d1:53:66:31:fc:95:
+<          46:77:35:51:62:c7:43:aa:eb:42:36:b8:e5:20:7b:64:5e:b2:
+<          0a:7a:19:65:16:b4:7b:03:2e:f5:df:2d:63:ab:f2:e9:e6:5a:
+<          64:4d:a3:93:64:3e:20:bf:cb:0c:fe:50:cf:ac:db:75:7f:4f:
+<          fb:be:5f:e9:06:71:3a:44:d1:0d:20:81:fb:64:45:5e:87:4a:
+<          86:4e:12:88
+---
+>          c5:78:13:fe:6e:d6:70:f9:32:76:31:b9:d6:60:69:36:43:7f:
+>          b2:b8:e7:cb:97:2c:ba:5e:de:07:80:5f:3f:b2:81:f0:7c:13:
+>          d6:ac:99:6b:91:8f:bd:41:43:66:17:bc:f3:00:77:ef:27:92:
+>          fe:69:9e:e4:b3:94:54:4e:21:ea:52:4b:d8:b8:09:7a:54:cf:
+>          28:ae:7a:f3:85:7d:ba:39:f1:75:f2:25:d3:b6:05:cd:0e:b3:
+>          17:d6:93:48:16:bc:06:97:d0:ff:99:b8:1e:36:17:b4:5a:da:
+>          39:07:03:82:d7:64:55:44:be:45:75:a5:07:44:60:dd:4f:ba:
+>          30:d7:6c:13:39:cf:28:ac:2e:7c:80:f5:1a:c6:55:a9:f9:9a:
+>          81:0f:7b:9b:b2:a7:3a:7f:3b:19:cd:99:de:53:06:55:94:d7:
+>          d6:bc:45:8a:d5:2a:12:08:47:ab:88:2a:7c:e7:71:17:a2:b9:
+>          18:3b:c2:cc:fd:91:d0:a6:01:93:ae:02:ea:ac:6c:24:ee:1a:
+>          f9:cb:84:7e:e1:96:f3:8f:a4:5b:84:12:12:9d:4b:9b:e2:89:
+>          56:27:ca:1f:7a:71:44:fd:b0:3e:04:9f:d3:b5:83:7b:18:d9:
+>          68:3e:b2:bb:a6:49:25:5c:8f:9a:e8:92:26:5d:ec:eb:db:1c:
+>          79:c1:08:c4
+64c64
+< IFNlcnZlciBSb290IENBMB4XDTE5MDIxOTA3MDM1OFoXDTE5MDIyMjA3MDM1OFow
+---
+> IFNlcnZlciBSb290IENBMB4XDTE5MDMyNTA5MjYwNloXDTE5MDMyODA5MjYwNlow
+67,74c67,74
+< MC4wLjEwggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQDGvRwk6hA7Qssw
+< F2KLc9ssKKSZ/73kPp6dCRFMTsKxzSFaME3lc6uJOPf97Z5MRfZptsyRqU16LVDB
+< oexZ2p+odQIcuFVzTHkDTjWyq5yYkGROevEMoTw2EdpRDuW3/JtrTcBmZNybPVEh
+< 1XX/B3qTYKsibpcF40yp+UN2ZfK+FQPqzofuEAhnEZV/lwj/WVueyuSIEQVHk7LO
+< BoMc/jVGBsXsse6SDe25R2rB1m+OIB7qI+1ETQMPaP55ZBLdyw4etNcmXOrlyBNn
+< estjKucOLmiwUtnX+7E/gaMcKw/AwrA5MCkZ+9lyoFV2MOkKdvLeqIiH60OGExaY
+< rmpnM7UpAgMBAAGjgcIwgb8wDAYDVR0TAQH/BAIwADAdBgNVHQ4EFgQULhnJRwUY
+< ZcfDZkAn0oLsZwm0LYMwHwYDVR0jBBgwFoAUAOVq49fuplMa9S1t1VTwpdhuMn0w
+---
+> MC4wLjEwggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQDDIv/qVAyXPsdG
+> mvKFt+HqRrHxcc4JMOvjTw3CvRg8c15TvyvXl1nfWM8SbrwgFfS4uGFA2zVLzWG/
+> 0lPdkIMNPM00VY6hn58OBHW/nKALPbKqxhXCG25v/JPEgXqUuKpqEVdaf49ms5cD
+> /wGqegxQ6PrcqL65mnQmVZ8dyNejWswly4m9ggAVFHV3EoqTABSu9GmAuMwTuPZ6
+> IetVh1nAHAHRbn5ui4X+wwocjvGdDG5rrrgK0rw7Ft6ac9iBOEItM0Y9/IfSfl43
+> VKWXwnuOWzplBeFLJKenvyoO2IW5fNvPMLuWWUtXQACcBiobuP7WYfm+KNWG5emK
+> lfjS12QFAgMBAAGjgcIwgb8wDAYDVR0TAQH/BAIwADAdBgNVHQ4EFgQUUquDPr8Q
+> STYmiov2/Zj5ocONzWYwHwYDVR0jBBgwFoAUcqTl9MJ9H4Nyo7BiN++GHPYPuNEw
+77,83c77,83
+< fwAAAYcEZQXR94cEcnP1ajANBgkqhkiG9w0BAQsFAAOCAQEANBmz2tHYR1oEjZ3O
+< YzMu1CV80VTDQKGlxhfp63OasKgsmH91G/QinbWHcPgfA0tfFR8QehdnIbFcqVAF
+< of5M8ucNdXA9rIqAp4WgEl3/sitjTd+L3o3Vn9XkuXLXTjTCtANSjlVHnWgaPkjn
+< 2PW7M9bJaolsWoPOau0FzXVTuRqP4UlUZo146wT7rX4mzYsnvnN4uyRX3aaAx7v6
+< FEGcVmzfzDEnFtTGYswMxlxG0VNmMfyVRnc1UWLHQ6rrQja45SB7ZF6yCnoZZRa0
+< ewMu9d8tY6vy6eZaZE2jk2Q+IL/LDP5Qz6zbdX9P+75f6QZxOkTRDSCB+2RFXodK
+< hk4SiA==
+---
+> fwAAAYcEZQXR94cEcnP1ajANBgkqhkiG9w0BAQsFAAOCAQEAxXgT/m7WcPkydjG5
+> 1mBpNkN/srjny5csul7eB4BfP7KB8HwT1qyZa5GPvUFDZhe88wB37yeS/mme5LOU
+> VE4h6lJL2LgJelTPKK5684V9ujnxdfIl07YFzQ6zF9aTSBa8BpfQ/5m4HjYXtFra
+> OQcDgtdkVUS+RXWlB0Rg3U+6MNdsEznPKKwufID1GsZVqfmagQ97m7KnOn87Gc2Z
+> 3lMGVZTX1rxFitUqEghHq4gqfOdxF6K5GDvCzP2R0KYBk64C6qxsJO4a+cuEfuGW
+> 84+kW4QSEp1Lm+KJVifKH3pxRP2wPgSf07WDexjZaD6yu6ZJJVyPmuiSJl3s69sc
+> ecEIxA==
+diff -bBr net_origin/tools/quic/certs/out/2048-sha256-root-index.txt net_log_classifier/tools/quic/certs/out/2048-sha256-root-index.txt
+1c1
+< V	190222070358Z		01	unknown	/C=US/ST=California/L=Mountain View/O=QUIC Server/CN=127.0.0.1
+---
+> V	190328092606Z		01	unknown	/C=US/ST=California/L=Mountain View/O=QUIC Server/CN=127.0.0.1
+diff -bBr net_origin/tools/quic/certs/out/2048-sha256-root.key net_log_classifier/tools/quic/certs/out/2048-sha256-root.key
+2,26c2,26
+< MIIEpQIBAAKCAQEA7iWs3SbFEuSTmyhYOYsWs4v98hxH8lG1TB0es6tcRdAdoiHE
+< 43ayacUO8MfpVGDB5X2h/I9e4wTKfVzOYhn5WvwriLHuupAeMITuRBL+tEdC1rB8
+< ZjB9RFlc8btFGNpcPjRG4mwri4ktrOThdl9SQCDf/9Nr2pfMEPVuHRvwL/3kNuuv
+< wT5j5gzZOlYPZUmYYdiXoxG+bvHX7NpIsfvxaY2qR/7cyQI8jf1tvSrTaJTNFxYL
+< y9CbFvlmO44e0IdZgC+/5UrUE+cN42RJ6dCgSRzjpnltysR4xD7pirBKK3cRe5Ld
+< zrvToOF8wKWlk4fkpoZLShGFaA8HpmTYgNxYOQIDAQABAoIBAQDbOs2erLEhSlDj
+< tck59+PHF6mINya4WSWn0urPhYGlNwgAmEuzBjMKEYFGgRI4PfZhOD1lzeoQ3Pk3
+< XLcVMkoNyzScWwiksEVKbyUUf9P/y9Yo40ExpZO71vQsCDR8w4/FJ8TVbbTMeFUW
+< 44D2wptqM5lh3ZRdH/6Y4gcjPvPmiHHj6hqwS4ZKSHr/0KWo8hG1pp45MqI+3g1R
+< 0J8n8lM3PZoU0fHPNOnELmghzOon9iwIkCOVPFSJpj4/JRqBoqX3Hvl4LFESseBf
+< 7uc8hlsPrigdFva44I6fdeP0lQA4ez0EhyXwZjbDOxCEpXxL4bAaiXNhcHa/7fLR
+< pPt7wQwBAoGBAPrj51b3Dx1UnO3Wazvh8XvbXM0m9vBS2NPaGiGWwArtPUVsVapo
+< k5y+lpZi1xeukAhX3Oz/Odke5PRFupMV5mXFLJLVMjVaEE2XE+LuvL4JAm0MTHvL
+< fWiMx0j6FDCuaBLiLPurM2AgRJGeVRVynCdxZU5gKa48T4CddBGNbu+BAoGBAPL/
+< VNsZOig5s0evJK1B8JPQH7ilm86ILkPuO730vt8+hBjB9rFm98ml9hnMEUI0WbFw
+< 9sfU/sLK1tRJoioM4jTjAEnBUiyuCeC9FgF+MjH0otesmXaS/zf3qdpWzdXryv1t
+< 1xmYikrE/D13mqrhet9rgykKMGHoIyob+xrNk0S5AoGBAN967JGphnwg55xvt5ti
+< uqESGErhn2sY0O18xHQQ/UV+Z2qUgoZFmt8vYaHZrzD4HHJiGXe+LMA7ZcQ07Gmi
+< Q1V52id84rllXUpP/bXR5Kv+CHwsTWCkNTRQ2h8mK5/lau0PLPSMXjoM5Cc1+yIc
+< sf3sY0n6HIaIUGUHW+Fas2uBAoGBAJ7Cl2w2hTq2yB0znuDbzhSky7TV7n/3lVKo
+< mbu35eTxcVjDkSvCvG2w0qN0ImqAzYES7wkMbg5SfB1ipmKW3Ev1a8DEX631X1rH
+< 71K2YpEk5ifHCtTfoYOtefm+8OitD4iYdQqyENhc7vgx5olym9bQ5Xaww3+ULTVb
+< 5qlSWr9xAoGAPIRNyDqHOnnZyCKQ2wfLtT6/flSa91X7ozVDRsYk5lmVTd/QSsXR
+< 3i6JjG5OOD0S9oaj8fBQqqmTsnBeWA7IVb0UDsxnIv5Pipc6stN3WI2vcwm3zMGX
+< y1JfEYF0Lkb2g8v3CdFdxEVsmOCCKzliiCC9mo3ithMoOlokfu3+Rj0=
+---
+> MIIEowIBAAKCAQEA6DH1W8vmN8Al0IqpDB27DXHdY4lsIKf7Bup3HqYrmzhL7UfU
+> LMfid0mgn/dwo0BjVRu4Y4yabUd0CsKJlRLYotbuznDP2MpNlJxeCTzAlf1tx07Y
+> dK6KHq+GdaxnwjRTd5Pu7QbnlqE0koC6rbGcMD3LHsA7YDwhpGGWyWf5ptiocN1x
+> GMvswR3bRJ2MjSJOen8zffQIgdLmjnlIzcU7yi/ROV7d92gYvKUArOC7nE/6TTKp
+> 2+O+eTeh7a12cghntgt68niuWExaGacyfvDB+RxBpnApai7ySbFJ/oJzmoLuwHk/
+> ApB09nVUSjJBQ0kbtAJsLSkDBN0cktfGNf8dGwIDAQABAoIBAQC/EYUuwa2zCLnV
+> TpTm9HwdByq/orDIepJV0ZCuNt1BQGUyX14Yb29K69pyaCJXJD/ZJBNqT6Qv8pFp
+> 3UVr13NPJICkfi563ZZTiQzUmxp7Em1IifgSpCHiOFvz7yf+piJdDu2YPItL52Gk
+> gKudDL9S7zZ7GoKBoVmps+hp2daU1Lj2Egf4sTw56KNv9emAh3rMsaocHM7/9O5G
+> eZX78DWR/hl4TM8tsialG83Q6b56xiz2Vy9TmEDS7MLkIja5JJgr7O5bPOt7rh9G
+> 8kOxOpoDVJfZIkHFRG2bzer1LV+fVWPIx0bOzDzegt/DRP9IXMAcCHT4paDul2q5
+> 8IIfAenxAoGBAPq2NBwkZ8ua2f3AFMoq0uV9ZNuDwJdRWMffS/HKijy9n4vFxynR
+> w/1Py5JpXgMEVR4vrJeVrv2wpTHODZOpxUubnPzJ5svhEcF8y8fXAg86JyfOndFL
+> CkqeVP1mzHwJhL1DKbxafiGpY18OmD7NilVyjQyRa3n13XWcjOyi+e2zAoGBAO0X
+> xM/a9x7EC8JS+8ptlZjxHouxKNY8F92f/f792LGAXO40cTGj/qFl5crOtpWw/4cB
+> FXcNwJBeQEcw2Jp+WGrgf7uFnAGrZ6P1Ktl+5LMu10ZaIDWdBJljrIKUYHmQWh9w
+> z74ZDxz/LGNJQoK3iclQU/4ftCD9TNxAAJ3GLG75AoGAIe6jIuPygGYW9vcWWT5u
+> iMzt55/vYwuJfpPETZdiGlJ3040TJZ/UbOZt4QUNyk69znYZX/LMWl2cHh+LSt8B
+> avhGyRfyesmdg5iGZCe/iZwPTJ30Ui1b2TmQuzM8ndUT+CGs9mcxBxFL98Ob63Qa
+> MvJsELVl3H3gWVi04ho0xW0CgYBT1EeeRomBs0eFGdo1JLH0NazbL3SE6xJ1JhCk
+> jBSGDiDNiHVNW/K4FlM9dgFQxBhVH6j7Qz2GzgxkH302gt24TFBdeUxDutsWOaVA
+> 6YDrafBry4n/6tipc3iXYucJlGSJIVYSnMGfOwnywQBnP4XUTDamb4c88tKuPWL6
+> Zgtn4QKBgHm+H90jkAxvFT1gGFsm1OjhurAvnpKwvPD1UpAAwNwLMq8FgcT63Al1
+> VpsSDrinv8pEkZDt3FBbQ1A0H+Xm6BsDaYPaMuoR+RQ6BmJb1P+eLmgQTS98bS6y
+> SV8uUNS2qmrLFL1+Qfk1oVvsLFX9yTeRB217nHIieW5R036QJspX
+diff -bBr net_origin/tools/quic/certs/out/2048-sha256-root.pem net_log_classifier/tools/quic/certs/out/2048-sha256-root.pem
+4c4
+<         Serial Number: 11060436982365624454 (0x997e90d5b27f1886)
+---
+>         Serial Number: 15931273111429849578 (0xdd17407cc28221ea)
+8,9c8,9
+<             Not Before: Feb 19 07:03:58 2019 GMT
+<             Not After : Feb 22 07:03:58 2019 GMT
+---
+>             Not Before: Mar 25 09:26:06 2019 GMT
+>             Not After : Mar 28 09:26:06 2019 GMT
+15,32c15,32
+<                     00:ee:25:ac:dd:26:c5:12:e4:93:9b:28:58:39:8b:
+<                     16:b3:8b:fd:f2:1c:47:f2:51:b5:4c:1d:1e:b3:ab:
+<                     5c:45:d0:1d:a2:21:c4:e3:76:b2:69:c5:0e:f0:c7:
+<                     e9:54:60:c1:e5:7d:a1:fc:8f:5e:e3:04:ca:7d:5c:
+<                     ce:62:19:f9:5a:fc:2b:88:b1:ee:ba:90:1e:30:84:
+<                     ee:44:12:fe:b4:47:42:d6:b0:7c:66:30:7d:44:59:
+<                     5c:f1:bb:45:18:da:5c:3e:34:46:e2:6c:2b:8b:89:
+<                     2d:ac:e4:e1:76:5f:52:40:20:df:ff:d3:6b:da:97:
+<                     cc:10:f5:6e:1d:1b:f0:2f:fd:e4:36:eb:af:c1:3e:
+<                     63:e6:0c:d9:3a:56:0f:65:49:98:61:d8:97:a3:11:
+<                     be:6e:f1:d7:ec:da:48:b1:fb:f1:69:8d:aa:47:fe:
+<                     dc:c9:02:3c:8d:fd:6d:bd:2a:d3:68:94:cd:17:16:
+<                     0b:cb:d0:9b:16:f9:66:3b:8e:1e:d0:87:59:80:2f:
+<                     bf:e5:4a:d4:13:e7:0d:e3:64:49:e9:d0:a0:49:1c:
+<                     e3:a6:79:6d:ca:c4:78:c4:3e:e9:8a:b0:4a:2b:77:
+<                     11:7b:92:dd:ce:bb:d3:a0:e1:7c:c0:a5:a5:93:87:
+<                     e4:a6:86:4b:4a:11:85:68:0f:07:a6:64:d8:80:dc:
+<                     58:39
+---
+>                     00:e8:31:f5:5b:cb:e6:37:c0:25:d0:8a:a9:0c:1d:
+>                     bb:0d:71:dd:63:89:6c:20:a7:fb:06:ea:77:1e:a6:
+>                     2b:9b:38:4b:ed:47:d4:2c:c7:e2:77:49:a0:9f:f7:
+>                     70:a3:40:63:55:1b:b8:63:8c:9a:6d:47:74:0a:c2:
+>                     89:95:12:d8:a2:d6:ee:ce:70:cf:d8:ca:4d:94:9c:
+>                     5e:09:3c:c0:95:fd:6d:c7:4e:d8:74:ae:8a:1e:af:
+>                     86:75:ac:67:c2:34:53:77:93:ee:ed:06:e7:96:a1:
+>                     34:92:80:ba:ad:b1:9c:30:3d:cb:1e:c0:3b:60:3c:
+>                     21:a4:61:96:c9:67:f9:a6:d8:a8:70:dd:71:18:cb:
+>                     ec:c1:1d:db:44:9d:8c:8d:22:4e:7a:7f:33:7d:f4:
+>                     08:81:d2:e6:8e:79:48:cd:c5:3b:ca:2f:d1:39:5e:
+>                     dd:f7:68:18:bc:a5:00:ac:e0:bb:9c:4f:fa:4d:32:
+>                     a9:db:e3:be:79:37:a1:ed:ad:76:72:08:67:b6:0b:
+>                     7a:f2:78:ae:58:4c:5a:19:a7:32:7e:f0:c1:f9:1c:
+>                     41:a6:70:29:6a:2e:f2:49:b1:49:fe:82:73:9a:82:
+>                     ee:c0:79:3f:02:90:74:f6:75:54:4a:32:41:43:49:
+>                     1b:b4:02:6c:2d:29:03:04:dd:1c:92:d7:c6:35:ff:
+>                     1d:1b
+38c38
+<                 00:E5:6A:E3:D7:EE:A6:53:1A:F5:2D:6D:D5:54:F0:A5:D8:6E:32:7D
+---
+>                 72:A4:E5:F4:C2:7D:1F:83:72:A3:B0:62:37:EF:86:1C:F6:0F:B8:D1
+42,56c42,56
+<          54:1b:65:c3:cf:43:a6:98:23:2e:3a:da:f9:94:cd:eb:80:69:
+<          42:a0:a8:0d:d8:4f:66:5c:03:ef:a3:11:e9:a8:3e:0d:ab:c3:
+<          8c:2f:37:f0:e7:72:b4:5d:8a:7c:67:05:5c:2f:c1:13:a0:50:
+<          90:f3:51:d8:67:69:c4:22:a7:b5:d7:e1:81:de:40:4e:35:ed:
+<          55:b7:ed:fc:a4:c5:dc:c0:ca:31:15:51:c6:13:5b:1c:30:27:
+<          6a:9e:4d:3f:a7:b7:d6:10:82:62:27:f2:49:31:e5:6d:3e:8a:
+<          17:56:8a:0a:f0:1d:3c:b8:bd:b0:8e:e2:15:64:ef:03:52:c3:
+<          c1:a9:6d:96:09:96:a8:70:8c:7e:29:0e:8f:82:a6:8e:c3:e3:
+<          c8:3f:d5:94:b3:37:92:e8:08:5b:0c:39:ef:5f:84:a6:b7:8b:
+<          cd:ff:37:ff:c0:e8:34:99:89:4d:c8:6c:5d:ea:e3:7d:67:a0:
+<          b6:a2:77:e8:1d:c9:d3:ed:3d:4f:d6:fb:cc:0e:dc:04:9c:52:
+<          5d:ad:75:b9:96:72:47:d2:1e:5c:36:48:bf:3c:c5:60:3c:7c:
+<          c2:69:0d:59:d2:94:e5:87:ca:a3:9a:80:1c:01:68:38:35:4e:
+<          e5:20:37:ad:eb:73:78:e9:56:e5:ce:9b:85:9f:5b:6f:ec:f2:
+<          dd:17:2c:18
+---
+>          e4:5e:0f:6c:75:d1:59:49:f9:22:6d:67:ac:e7:c4:57:3d:c2:
+>          68:dc:b6:89:34:e4:77:8a:ee:03:46:05:77:d5:19:c5:15:a2:
+>          27:01:17:01:54:11:3a:d5:2a:40:b8:77:7e:a4:06:6c:4f:7b:
+>          6c:56:7e:e8:99:1c:c9:fc:63:74:9f:f7:79:82:da:f4:6c:5d:
+>          7f:42:a9:4c:58:e2:22:cd:76:50:8a:14:01:9d:33:f8:67:8a:
+>          6d:d4:6b:1f:56:a5:4d:14:95:51:4f:88:47:e5:11:59:f1:d2:
+>          82:36:01:66:13:00:37:84:bf:1b:c7:a7:6e:f3:44:e8:e7:d1:
+>          5b:d1:6d:5f:1e:be:52:76:34:cc:a9:c0:7a:51:e8:a1:26:36:
+>          68:16:05:e4:d9:53:d7:0c:e1:3d:f5:1f:a1:df:9a:8f:a6:c4:
+>          4c:23:09:e0:64:73:8b:83:f7:22:a9:90:38:a1:84:f3:72:3b:
+>          90:28:25:77:f5:2d:ff:59:38:9d:d4:2b:5a:6b:14:fa:36:61:
+>          9d:47:06:5f:9a:41:e8:f6:32:6a:32:38:5e:e1:b7:b8:be:92:
+>          88:6f:09:88:83:69:4e:56:1b:e9:ce:55:bf:80:77:e3:33:a1:
+>          8e:2d:2f:c1:bb:19:b3:df:95:f9:55:16:09:21:c2:f0:25:4e:
+>          42:3f:52:30
+58,74c58,74
+< MIIDATCCAemgAwIBAgIJAJl+kNWyfxiGMA0GCSqGSIb3DQEBCwUAMB4xHDAaBgNV
+< BAMME1FVSUMgU2VydmVyIFJvb3QgQ0EwHhcNMTkwMjE5MDcwMzU4WhcNMTkwMjIy
+< MDcwMzU4WjAeMRwwGgYDVQQDDBNRVUlDIFNlcnZlciBSb290IENBMIIBIjANBgkq
+< hkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA7iWs3SbFEuSTmyhYOYsWs4v98hxH8lG1
+< TB0es6tcRdAdoiHE43ayacUO8MfpVGDB5X2h/I9e4wTKfVzOYhn5WvwriLHuupAe
+< MITuRBL+tEdC1rB8ZjB9RFlc8btFGNpcPjRG4mwri4ktrOThdl9SQCDf/9Nr2pfM
+< EPVuHRvwL/3kNuuvwT5j5gzZOlYPZUmYYdiXoxG+bvHX7NpIsfvxaY2qR/7cyQI8
+< jf1tvSrTaJTNFxYLy9CbFvlmO44e0IdZgC+/5UrUE+cN42RJ6dCgSRzjpnltysR4
+< xD7pirBKK3cRe5LdzrvToOF8wKWlk4fkpoZLShGFaA8HpmTYgNxYOQIDAQABo0Iw
+< QDAPBgNVHRMBAf8EBTADAQH/MB0GA1UdDgQWBBQA5Wrj1+6mUxr1LW3VVPCl2G4y
+< fTAOBgNVHQ8BAf8EBAMCAQYwDQYJKoZIhvcNAQELBQADggEBAFQbZcPPQ6aYIy46
+< 2vmUzeuAaUKgqA3YT2ZcA++jEemoPg2rw4wvN/DncrRdinxnBVwvwROgUJDzUdhn
+< acQip7XX4YHeQE417VW37fykxdzAyjEVUcYTWxwwJ2qeTT+nt9YQgmIn8kkx5W0+
+< ihdWigrwHTy4vbCO4hVk7wNSw8GpbZYJlqhwjH4pDo+Cpo7D48g/1ZSzN5LoCFsM
+< Oe9fhKa3i83/N//A6DSZiU3IbF3q431noLaid+gdydPtPU/W+8wO3AScUl2tdbmW
+< ckfSHlw2SL88xWA8fMJpDVnSlOWHyqOagBwBaDg1TuUgN63rc3jpVuXOm4WfW2/s
+< 8t0XLBg=
+---
+> MIIDATCCAemgAwIBAgIJAN0XQHzCgiHqMA0GCSqGSIb3DQEBCwUAMB4xHDAaBgNV
+> BAMME1FVSUMgU2VydmVyIFJvb3QgQ0EwHhcNMTkwMzI1MDkyNjA2WhcNMTkwMzI4
+> MDkyNjA2WjAeMRwwGgYDVQQDDBNRVUlDIFNlcnZlciBSb290IENBMIIBIjANBgkq
+> hkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA6DH1W8vmN8Al0IqpDB27DXHdY4lsIKf7
+> Bup3HqYrmzhL7UfULMfid0mgn/dwo0BjVRu4Y4yabUd0CsKJlRLYotbuznDP2MpN
+> lJxeCTzAlf1tx07YdK6KHq+GdaxnwjRTd5Pu7QbnlqE0koC6rbGcMD3LHsA7YDwh
+> pGGWyWf5ptiocN1xGMvswR3bRJ2MjSJOen8zffQIgdLmjnlIzcU7yi/ROV7d92gY
+> vKUArOC7nE/6TTKp2+O+eTeh7a12cghntgt68niuWExaGacyfvDB+RxBpnApai7y
+> SbFJ/oJzmoLuwHk/ApB09nVUSjJBQ0kbtAJsLSkDBN0cktfGNf8dGwIDAQABo0Iw
+> QDAPBgNVHRMBAf8EBTADAQH/MB0GA1UdDgQWBBRypOX0wn0fg3KjsGI374Yc9g+4
+> 0TAOBgNVHQ8BAf8EBAMCAQYwDQYJKoZIhvcNAQELBQADggEBAOReD2x10VlJ+SJt
+> Z6znxFc9wmjctok05HeK7gNGBXfVGcUVoicBFwFUETrVKkC4d36kBmxPe2xWfuiZ
+> HMn8Y3Sf93mC2vRsXX9CqUxY4iLNdlCKFAGdM/hnim3Uax9WpU0UlVFPiEflEVnx
+> 0oI2AWYTADeEvxvHp27zROjn0VvRbV8evlJ2NMypwHpR6KEmNmgWBeTZU9cM4T31
+> H6Hfmo+mxEwjCeBkc4uD9yKpkDihhPNyO5AoJXf1Lf9ZOJ3UK1prFPo2YZ1HBl+a
+> Qej2MmoyOF7ht7i+kohvCYiDaU5WG+nOVb+Ad+MzoY4tL8G7GbPflflVFgkhwvAl
+> TkI/UjA=
+diff -bBr net_origin/tools/quic/certs/out/2048-sha256-root.req net_log_classifier/tools/quic/certs/out/2048-sha256-root.req
+3,14c3,14
+< DQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAO4lrN0mxRLkk5soWDmLFrOL/fIc
+< R/JRtUwdHrOrXEXQHaIhxON2smnFDvDH6VRgweV9ofyPXuMEyn1czmIZ+Vr8K4ix
+< 7rqQHjCE7kQS/rRHQtawfGYwfURZXPG7RRjaXD40RuJsK4uJLazk4XZfUkAg3//T
+< a9qXzBD1bh0b8C/95Dbrr8E+Y+YM2TpWD2VJmGHYl6MRvm7x1+zaSLH78WmNqkf+
+< 3MkCPI39bb0q02iUzRcWC8vQmxb5ZjuOHtCHWYAvv+VK1BPnDeNkSenQoEkc46Z5
+< bcrEeMQ+6YqwSit3EXuS3c6706DhfMClpZOH5KaGS0oRhWgPB6Zk2IDcWDkCAwEA
+< AaAAMA0GCSqGSIb3DQEBCwUAA4IBAQAja74Sqnt9mlfmq7RFGXgXsDdBhPCfbvXK
+< PUFxU6X+/f8itt2T2+3AdizJzkDhAGi2PrQSDHr2THxUZtHXHMxhNDkK8yySZ55M
+< 2yfAX6eV1SUb4p3cEfxsJDO87paaWi1fjw+v2XarXuDAczvJlNx6VETOWvQ1NRS9
+< 378+Npke26ECO8/HMdoWZrVbaj3CILZ6Z11iOYwu6ddmCK1hWND3z/PQ7E0b3SiQ
+< mzVMc/O5bv+zYg8n668rkCY2LI2JrOFMnpTyXuYcIi3RWIPsrE+bm3VtXvfLvhUr
+< y/VT9LsXXJFei5GxgvNlv/PmB6NA51JIDJzXqqSqDtrjLEf+EU8L
+---
+> DQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAOgx9VvL5jfAJdCKqQwduw1x3WOJ
+> bCCn+wbqdx6mK5s4S+1H1CzH4ndJoJ/3cKNAY1UbuGOMmm1HdArCiZUS2KLW7s5w
+> z9jKTZScXgk8wJX9bcdO2HSuih6vhnWsZ8I0U3eT7u0G55ahNJKAuq2xnDA9yx7A
+> O2A8IaRhlsln+abYqHDdcRjL7MEd20SdjI0iTnp/M330CIHS5o55SM3FO8ov0Tle
+> 3fdoGLylAKzgu5xP+k0yqdvjvnk3oe2tdnIIZ7YLevJ4rlhMWhmnMn7wwfkcQaZw
+> KWou8kmxSf6Cc5qC7sB5PwKQdPZ1VEoyQUNJG7QCbC0pAwTdHJLXxjX/HRsCAwEA
+> AaAAMA0GCSqGSIb3DQEBCwUAA4IBAQAxMWG3wyQ50wLzd0rPNrf2eHiFm6493ZZ9
+> rKMAi3lfX/5SftPdaxaNqXw4OxfI+jWzBLXmoMRgijP6Yb/qk2XgBo9zpYIdWUCT
+> 5vdy+F5TO2eOsJKKBOU5k8ZR6OVGIpQ9ShyOsOx8rNBl6BfryHLgP6na54D4M3z6
+> EeYDr4xCYcU65fE1kvi7IorUoVM9fPms02IpGPsvq5TCfhoO+Z4IsAq8OPPCKcvl
+> 59C2qeWZM4JsGB6Lcm/hkSDxLeaegqLjlp5+8esYgXVggVbmzSx0XNJs6Ciqgy8M
+> Fmpjw8X50MdUGDA32n+PS1oh77hlkP/vhct3lN9opwqhiZ8etkoD
+diff -bBr net_origin/tools/quic/certs/out/leaf_cert.key net_log_classifier/tools/quic/certs/out/leaf_cert.key
+2,27c2,27
+< MIIEvAIBADANBgkqhkiG9w0BAQEFAASCBKYwggSiAgEAAoIBAQDGvRwk6hA7Qssw
+< F2KLc9ssKKSZ/73kPp6dCRFMTsKxzSFaME3lc6uJOPf97Z5MRfZptsyRqU16LVDB
+< oexZ2p+odQIcuFVzTHkDTjWyq5yYkGROevEMoTw2EdpRDuW3/JtrTcBmZNybPVEh
+< 1XX/B3qTYKsibpcF40yp+UN2ZfK+FQPqzofuEAhnEZV/lwj/WVueyuSIEQVHk7LO
+< BoMc/jVGBsXsse6SDe25R2rB1m+OIB7qI+1ETQMPaP55ZBLdyw4etNcmXOrlyBNn
+< estjKucOLmiwUtnX+7E/gaMcKw/AwrA5MCkZ+9lyoFV2MOkKdvLeqIiH60OGExaY
+< rmpnM7UpAgMBAAECggEAciLNdQ3PwJj9pGLpv3kMGHJHBgJwBhNIeJtqic551i8e
+< xnMTaYFitG45TmYXEWrkt5W6KrV2v4Ii7PGXkYsTQmXgjqn2uT7kCNfz0uboCl5y
+< nPfSVBSNReg+32qU13OFtrxykNvALo+qdqnnGE4tQVK1NhMZPNJrhvqWmfq2zB62
+< UVK3gvwroQ1OTWGiIfZ44c20rwZ5y26aWxWS7MRwL2iA5YGjS7p7zJn6gY+LZwdh
+< Xf8MqU3EjeCkRNoOesp5yV5aQGKPCVnhcUhsLrkB+wS/ZXp+HOgC3R7IADrWzL04
+< zqVL4tgk9/OkLZPIkHAwi/ugmJgAVkdsY+zb/0zaGQKBgQDrFxhwkOkeTdGMHvcI
+< PYS12mx88WD7fw82NZvQS/IWkfKTR/6f5RAZFGvN6ZIyqzrbMZJWAsgnHiOaDVyx
+< /v01+Ezi+ZrH7JB3kx85gtfRA9Fs8Rkbzsdz6SiWlopvWdnAtxfmIRN5pK7ZHfAA
+< hlFxJ6ejJYQXqUV8TJ+BxlriywKBgQDYak5cUiYs+kTlu3De9KzyisS9HvwMOAjS
+< HwyCZnTYVbHYFhf6zWHmR7DIM5k89sq1UALY46rFvozIAFtQrTotR8YhwR+tOWQn
+< bpevs1Eb3M0H3a8dON58cuPSZuRWL3Z7EKgH7uHDqlpdtynx6iAID0KmezmUl5rb
+< o1eJf+FlWwKBgHQ2ZYl3yRWG6Hh48isrpgfzor+c3xFT/SQSGiU89b58hUqTQ2at
+< aGjNdIFE3lWX2a9zcOB93Y2g036a7mC7KVbdmLx3ITGFWuERZFUcviz/0y4kfQIH
+< FQfSkZLndiWXaBJhMDo9zY/LffesWfEYdPgX30HCEOtVbRkGE6+ma1VDAoGASXGi
+< UEBsxjzU3uYCwxdkDhe79raqMPdfPvfchfCBXN2QMlYlIy9KNx1DSF4CdicG2gti
+< O/rffKZTHpjIZJO1N6KxAcmJl37vl1Y30h/Xuc3wIug/wnoHP1K6MDBM81a+LbuU
+< WsTeB0oryrwbVwbuge2z383X166vljRTw80LUBsCgYASLt/bbzOzhSGCy9+DTzht
+< 0zZ44PtPATSHlsNVzin2o4WAasguWhu8S3avGItHWQgsZzDzoLOkbzYhI129lLWG
+< u7ag8q9QWMjM7diX+8yQM3jRRuxgNPJ2SLfd988HVwzvTtUAJ82U3LtI1JGwWxH5
+< 0TgI3FvMXq/5ZcqnyHxJrw==
+---
+> MIIEvQIBADANBgkqhkiG9w0BAQEFAASCBKcwggSjAgEAAoIBAQDDIv/qVAyXPsdG
+> mvKFt+HqRrHxcc4JMOvjTw3CvRg8c15TvyvXl1nfWM8SbrwgFfS4uGFA2zVLzWG/
+> 0lPdkIMNPM00VY6hn58OBHW/nKALPbKqxhXCG25v/JPEgXqUuKpqEVdaf49ms5cD
+> /wGqegxQ6PrcqL65mnQmVZ8dyNejWswly4m9ggAVFHV3EoqTABSu9GmAuMwTuPZ6
+> IetVh1nAHAHRbn5ui4X+wwocjvGdDG5rrrgK0rw7Ft6ac9iBOEItM0Y9/IfSfl43
+> VKWXwnuOWzplBeFLJKenvyoO2IW5fNvPMLuWWUtXQACcBiobuP7WYfm+KNWG5emK
+> lfjS12QFAgMBAAECggEAN990oVbRiBjcnDXPjUQadqcpWjW4xd7xG9PN392e6+go
+> sRgC6KcYf6ABIoj8ar9+o8l/Zz+c4gh7nZ4Oj1lKfObU5tA8l8CJnUzfni6tkKpo
+> 1wcCweJy27PZZ6GfRKgfe2FdvrbZi5GOgwFoK7Tog95Bvh6/BYvZCATqG3AfdlEP
+> eeSLeeIFaHLA6YPlY9Ey2r8E29PaFbrK0WfRyl2MEfEVfgPQ5aDL9sdwaNGEISDf
+> ptgWiTrLrmql6kt6wkhHz9ZeYLRcQ3ShtTyaLKhsUnAm8q0DgHzeO5HyOfnCSwaN
+> 5yRyhM8B/LI+iCuWhPtaF277p/gXx184II6GUK4DPQKBgQD4082lJ9FqMrwnfyz2
+> OT6vWcozPGj8CpwmQWkWixLv5Gi2MEnCfiTjmm84HQaAdi2PfozbOlBR1kPuaiyr
+> RKmgp05klQng+07THTuM0Ogl/l3LikfCZ2h3f1sZ6wI9mp3oddCAmcdrFzCr/yGy
+> kKAl8G+hDJPZjbCWgw8/UID2IwKBgQDIwv3cT8P+o00V6HFK9VNYz0eoX8ck4i3D
+> b5jE06Go0y92epzzzHiQ6Hndzxp4nny+bxRyZjeBnD+mcD3wp2BzOBNDRT0uQfrh
+> ozo3CDgczFno42R5UX85VUkfPkM59nNTlj5cZLV4ykge7J37FuSHD26nq5ir0WLX
+> n4VuLENbtwKBgGrc++q8KRIE7A3CbprohuVkGJTckvH71IgRe4J1BBMG83mbT3I6
+> HrmpL67XuF0fY/3GidP1PV2IOfCApOKBQKCAegh0gaOgCoBcg6C8b5cxoTKzFpKF
+> OrZnecatyW6PotWdE4jHgn+ZnAuiLOS1fDIPCsIN1smOMpLRgpDckCYlAoGBAJMH
+> GtvKHwPRnJa60J3Q5OVZiGUrH7FHY7SJehxL0UzOvSfLzD5QNMwLNZTYI87KYxkk
+> SJkvet8VCxhdgz9HlT9Mhe7yOkgyUgYFgJDlGBMfJYmFXwPqR345k3+qHZnJf9Rr
+> Z+hKaQy5N/BN4bUNove2uZdZ+El84yJ+1T1GdV4pAoGAXTdq6D+cfShrTVLYGTsh
+> gXbtjBCAShff9SO8/k10RVNx0GsGnVPz2ulm37IKfXKBFbiTaYCOHM6JMlbF9af8
+> 4cIxRmwj0udO6b1F447bX/jKwuGcYXX3ErsDBqvZGQQbB3eFZe2d9DHi2+MeRMB+
+> sQJNDuAbc6OIxN74e/2wAM4=
+diff -bBr net_origin/tools/quic/certs/out/leaf_cert.pem net_log_classifier/tools/quic/certs/out/leaf_cert.pem
+8,9c8,9
+<             Not Before: Feb 19 07:03:58 2019 GMT
+<             Not After : Feb 22 07:03:58 2019 GMT
+---
+>             Not Before: Mar 25 09:26:06 2019 GMT
+>             Not After : Mar 28 09:26:06 2019 GMT
+15,32c15,32
+<                     00:c6:bd:1c:24:ea:10:3b:42:cb:30:17:62:8b:73:
+<                     db:2c:28:a4:99:ff:bd:e4:3e:9e:9d:09:11:4c:4e:
+<                     c2:b1:cd:21:5a:30:4d:e5:73:ab:89:38:f7:fd:ed:
+<                     9e:4c:45:f6:69:b6:cc:91:a9:4d:7a:2d:50:c1:a1:
+<                     ec:59:da:9f:a8:75:02:1c:b8:55:73:4c:79:03:4e:
+<                     35:b2:ab:9c:98:90:64:4e:7a:f1:0c:a1:3c:36:11:
+<                     da:51:0e:e5:b7:fc:9b:6b:4d:c0:66:64:dc:9b:3d:
+<                     51:21:d5:75:ff:07:7a:93:60:ab:22:6e:97:05:e3:
+<                     4c:a9:f9:43:76:65:f2:be:15:03:ea:ce:87:ee:10:
+<                     08:67:11:95:7f:97:08:ff:59:5b:9e:ca:e4:88:11:
+<                     05:47:93:b2:ce:06:83:1c:fe:35:46:06:c5:ec:b1:
+<                     ee:92:0d:ed:b9:47:6a:c1:d6:6f:8e:20:1e:ea:23:
+<                     ed:44:4d:03:0f:68:fe:79:64:12:dd:cb:0e:1e:b4:
+<                     d7:26:5c:ea:e5:c8:13:67:7a:cb:63:2a:e7:0e:2e:
+<                     68:b0:52:d9:d7:fb:b1:3f:81:a3:1c:2b:0f:c0:c2:
+<                     b0:39:30:29:19:fb:d9:72:a0:55:76:30:e9:0a:76:
+<                     f2:de:a8:88:87:eb:43:86:13:16:98:ae:6a:67:33:
+<                     b5:29
+---
+>                     00:c3:22:ff:ea:54:0c:97:3e:c7:46:9a:f2:85:b7:
+>                     e1:ea:46:b1:f1:71:ce:09:30:eb:e3:4f:0d:c2:bd:
+>                     18:3c:73:5e:53:bf:2b:d7:97:59:df:58:cf:12:6e:
+>                     bc:20:15:f4:b8:b8:61:40:db:35:4b:cd:61:bf:d2:
+>                     53:dd:90:83:0d:3c:cd:34:55:8e:a1:9f:9f:0e:04:
+>                     75:bf:9c:a0:0b:3d:b2:aa:c6:15:c2:1b:6e:6f:fc:
+>                     93:c4:81:7a:94:b8:aa:6a:11:57:5a:7f:8f:66:b3:
+>                     97:03:ff:01:aa:7a:0c:50:e8:fa:dc:a8:be:b9:9a:
+>                     74:26:55:9f:1d:c8:d7:a3:5a:cc:25:cb:89:bd:82:
+>                     00:15:14:75:77:12:8a:93:00:14:ae:f4:69:80:b8:
+>                     cc:13:b8:f6:7a:21:eb:55:87:59:c0:1c:01:d1:6e:
+>                     7e:6e:8b:85:fe:c3:0a:1c:8e:f1:9d:0c:6e:6b:ae:
+>                     b8:0a:d2:bc:3b:16:de:9a:73:d8:81:38:42:2d:33:
+>                     46:3d:fc:87:d2:7e:5e:37:54:a5:97:c2:7b:8e:5b:
+>                     3a:65:05:e1:4b:24:a7:a7:bf:2a:0e:d8:85:b9:7c:
+>                     db:cf:30:bb:96:59:4b:57:40:00:9c:06:2a:1b:b8:
+>                     fe:d6:61:f9:be:28:d5:86:e5:e9:8a:95:f8:d2:d7:
+>                     64:05
+38c38
+<                 2E:19:C9:47:05:18:65:C7:C3:66:40:27:D2:82:EC:67:09:B4:2D:83
+---
+>                 52:AB:83:3E:BF:10:49:36:26:8A:8B:F6:FD:98:F9:A1:C3:8D:CD:66
+40c40
+<                 keyid:00:E5:6A:E3:D7:EE:A6:53:1A:F5:2D:6D:D5:54:F0:A5:D8:6E:32:7D
+---
+>                 keyid:72:A4:E5:F4:C2:7D:1F:83:72:A3:B0:62:37:EF:86:1C:F6:0F:B8:D1
+47,61c47,61
+<          34:19:b3:da:d1:d8:47:5a:04:8d:9d:ce:63:33:2e:d4:25:7c:
+<          d1:54:c3:40:a1:a5:c6:17:e9:eb:73:9a:b0:a8:2c:98:7f:75:
+<          1b:f4:22:9d:b5:87:70:f8:1f:03:4b:5f:15:1f:10:7a:17:67:
+<          21:b1:5c:a9:50:05:a1:fe:4c:f2:e7:0d:75:70:3d:ac:8a:80:
+<          a7:85:a0:12:5d:ff:b2:2b:63:4d:df:8b:de:8d:d5:9f:d5:e4:
+<          b9:72:d7:4e:34:c2:b4:03:52:8e:55:47:9d:68:1a:3e:48:e7:
+<          d8:f5:bb:33:d6:c9:6a:89:6c:5a:83:ce:6a:ed:05:cd:75:53:
+<          b9:1a:8f:e1:49:54:66:8d:78:eb:04:fb:ad:7e:26:cd:8b:27:
+<          be:73:78:bb:24:57:dd:a6:80:c7:bb:fa:14:41:9c:56:6c:df:
+<          cc:31:27:16:d4:c6:62:cc:0c:c6:5c:46:d1:53:66:31:fc:95:
+<          46:77:35:51:62:c7:43:aa:eb:42:36:b8:e5:20:7b:64:5e:b2:
+<          0a:7a:19:65:16:b4:7b:03:2e:f5:df:2d:63:ab:f2:e9:e6:5a:
+<          64:4d:a3:93:64:3e:20:bf:cb:0c:fe:50:cf:ac:db:75:7f:4f:
+<          fb:be:5f:e9:06:71:3a:44:d1:0d:20:81:fb:64:45:5e:87:4a:
+<          86:4e:12:88
+---
+>          c5:78:13:fe:6e:d6:70:f9:32:76:31:b9:d6:60:69:36:43:7f:
+>          b2:b8:e7:cb:97:2c:ba:5e:de:07:80:5f:3f:b2:81:f0:7c:13:
+>          d6:ac:99:6b:91:8f:bd:41:43:66:17:bc:f3:00:77:ef:27:92:
+>          fe:69:9e:e4:b3:94:54:4e:21:ea:52:4b:d8:b8:09:7a:54:cf:
+>          28:ae:7a:f3:85:7d:ba:39:f1:75:f2:25:d3:b6:05:cd:0e:b3:
+>          17:d6:93:48:16:bc:06:97:d0:ff:99:b8:1e:36:17:b4:5a:da:
+>          39:07:03:82:d7:64:55:44:be:45:75:a5:07:44:60:dd:4f:ba:
+>          30:d7:6c:13:39:cf:28:ac:2e:7c:80:f5:1a:c6:55:a9:f9:9a:
+>          81:0f:7b:9b:b2:a7:3a:7f:3b:19:cd:99:de:53:06:55:94:d7:
+>          d6:bc:45:8a:d5:2a:12:08:47:ab:88:2a:7c:e7:71:17:a2:b9:
+>          18:3b:c2:cc:fd:91:d0:a6:01:93:ae:02:ea:ac:6c:24:ee:1a:
+>          f9:cb:84:7e:e1:96:f3:8f:a4:5b:84:12:12:9d:4b:9b:e2:89:
+>          56:27:ca:1f:7a:71:44:fd:b0:3e:04:9f:d3:b5:83:7b:18:d9:
+>          68:3e:b2:bb:a6:49:25:5c:8f:9a:e8:92:26:5d:ec:eb:db:1c:
+>          79:c1:08:c4
+64c64
+< IFNlcnZlciBSb290IENBMB4XDTE5MDIxOTA3MDM1OFoXDTE5MDIyMjA3MDM1OFow
+---
+> IFNlcnZlciBSb290IENBMB4XDTE5MDMyNTA5MjYwNloXDTE5MDMyODA5MjYwNlow
+67,74c67,74
+< MC4wLjEwggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQDGvRwk6hA7Qssw
+< F2KLc9ssKKSZ/73kPp6dCRFMTsKxzSFaME3lc6uJOPf97Z5MRfZptsyRqU16LVDB
+< oexZ2p+odQIcuFVzTHkDTjWyq5yYkGROevEMoTw2EdpRDuW3/JtrTcBmZNybPVEh
+< 1XX/B3qTYKsibpcF40yp+UN2ZfK+FQPqzofuEAhnEZV/lwj/WVueyuSIEQVHk7LO
+< BoMc/jVGBsXsse6SDe25R2rB1m+OIB7qI+1ETQMPaP55ZBLdyw4etNcmXOrlyBNn
+< estjKucOLmiwUtnX+7E/gaMcKw/AwrA5MCkZ+9lyoFV2MOkKdvLeqIiH60OGExaY
+< rmpnM7UpAgMBAAGjgcIwgb8wDAYDVR0TAQH/BAIwADAdBgNVHQ4EFgQULhnJRwUY
+< ZcfDZkAn0oLsZwm0LYMwHwYDVR0jBBgwFoAUAOVq49fuplMa9S1t1VTwpdhuMn0w
+---
+> MC4wLjEwggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQDDIv/qVAyXPsdG
+> mvKFt+HqRrHxcc4JMOvjTw3CvRg8c15TvyvXl1nfWM8SbrwgFfS4uGFA2zVLzWG/
+> 0lPdkIMNPM00VY6hn58OBHW/nKALPbKqxhXCG25v/JPEgXqUuKpqEVdaf49ms5cD
+> /wGqegxQ6PrcqL65mnQmVZ8dyNejWswly4m9ggAVFHV3EoqTABSu9GmAuMwTuPZ6
+> IetVh1nAHAHRbn5ui4X+wwocjvGdDG5rrrgK0rw7Ft6ac9iBOEItM0Y9/IfSfl43
+> VKWXwnuOWzplBeFLJKenvyoO2IW5fNvPMLuWWUtXQACcBiobuP7WYfm+KNWG5emK
+> lfjS12QFAgMBAAGjgcIwgb8wDAYDVR0TAQH/BAIwADAdBgNVHQ4EFgQUUquDPr8Q
+> STYmiov2/Zj5ocONzWYwHwYDVR0jBBgwFoAUcqTl9MJ9H4Nyo7BiN++GHPYPuNEw
+77,83c77,83
+< fwAAAYcEZQXR94cEcnP1ajANBgkqhkiG9w0BAQsFAAOCAQEANBmz2tHYR1oEjZ3O
+< YzMu1CV80VTDQKGlxhfp63OasKgsmH91G/QinbWHcPgfA0tfFR8QehdnIbFcqVAF
+< of5M8ucNdXA9rIqAp4WgEl3/sitjTd+L3o3Vn9XkuXLXTjTCtANSjlVHnWgaPkjn
+< 2PW7M9bJaolsWoPOau0FzXVTuRqP4UlUZo146wT7rX4mzYsnvnN4uyRX3aaAx7v6
+< FEGcVmzfzDEnFtTGYswMxlxG0VNmMfyVRnc1UWLHQ6rrQja45SB7ZF6yCnoZZRa0
+< ewMu9d8tY6vy6eZaZE2jk2Q+IL/LDP5Qz6zbdX9P+75f6QZxOkTRDSCB+2RFXodK
+< hk4SiA==
+---
+> fwAAAYcEZQXR94cEcnP1ajANBgkqhkiG9w0BAQsFAAOCAQEAxXgT/m7WcPkydjG5
+> 1mBpNkN/srjny5csul7eB4BfP7KB8HwT1qyZa5GPvUFDZhe88wB37yeS/mme5LOU
+> VE4h6lJL2LgJelTPKK5684V9ujnxdfIl07YFzQ6zF9aTSBa8BpfQ/5m4HjYXtFra
+> OQcDgtdkVUS+RXWlB0Rg3U+6MNdsEznPKKwufID1GsZVqfmagQ97m7KnOn87Gc2Z
+> 3lMGVZTX1rxFitUqEghHq4gqfOdxF6K5GDvCzP2R0KYBk64C6qxsJO4a+cuEfuGW
+> 84+kW4QSEp1Lm+KJVifKH3pxRP2wPgSf07WDexjZaD6yu6ZJJVyPmuiSJl3s69sc
+> ecEIxA==
+Binary files net_origin/tools/quic/certs/out/leaf_cert.pkcs8 and net_log_classifier/tools/quic/certs/out/leaf_cert.pkcs8 differ
+diff -bBr net_origin/tools/quic/certs/out/leaf_cert.req net_log_classifier/tools/quic/certs/out/leaf_cert.req
+5,10c5,10
+< AQDGvRwk6hA7QsswF2KLc9ssKKSZ/73kPp6dCRFMTsKxzSFaME3lc6uJOPf97Z5M
+< RfZptsyRqU16LVDBoexZ2p+odQIcuFVzTHkDTjWyq5yYkGROevEMoTw2EdpRDuW3
+< /JtrTcBmZNybPVEh1XX/B3qTYKsibpcF40yp+UN2ZfK+FQPqzofuEAhnEZV/lwj/
+< WVueyuSIEQVHk7LOBoMc/jVGBsXsse6SDe25R2rB1m+OIB7qI+1ETQMPaP55ZBLd
+< yw4etNcmXOrlyBNnestjKucOLmiwUtnX+7E/gaMcKw/AwrA5MCkZ+9lyoFV2MOkK
+< dvLeqIiH60OGExaYrmpnM7UpAgMBAAGgYzBhBgkqhkiG9w0BCQ4xVDBSMFAGA1Ud
+---
+> AQDDIv/qVAyXPsdGmvKFt+HqRrHxcc4JMOvjTw3CvRg8c15TvyvXl1nfWM8Sbrwg
+> FfS4uGFA2zVLzWG/0lPdkIMNPM00VY6hn58OBHW/nKALPbKqxhXCG25v/JPEgXqU
+> uKpqEVdaf49ms5cD/wGqegxQ6PrcqL65mnQmVZ8dyNejWswly4m9ggAVFHV3EoqT
+> ABSu9GmAuMwTuPZ6IetVh1nAHAHRbn5ui4X+wwocjvGdDG5rrrgK0rw7Ft6ac9iB
+> OEItM0Y9/IfSfl43VKWXwnuOWzplBeFLJKenvyoO2IW5fNvPMLuWWUtXQACcBiob
+> uP7WYfm+KNWG5emKlfjS12QFAgMBAAGgYzBhBgkqhkiG9w0BCQ4xVDBSMFAGA1Ud
+13,18c13,18
+< Eel5xBuNTcKh0CkeTd6QtwVR/w8k4d4lk3VLHSlvEHnip85UtIvEiVyEXlY/Bzr3
+< yCs+LPoJDjKoiXmohPcpHGjmkJCAYhyAlsqxrqn/ZgPLUSzI4egP8ubV9CaFqaZz
+< UJsh8fvjw+QItqQLqVvzCgInEgCWCOUtMiRIWjoChqniZMyMAt5wF/ZqdS67zNA2
+< rOgDtQuKHJwRTOvDU7Bk4BXcDRS0GPKpQ0f9zYEVdmnZ2ghH+s2pv/w3TIUZUHwo
+< q7NvSBm5/ayfIGgAEWTYIKK5ib4H+Qv19vAXVZLffEwnrmJuFIjuY7GeFwusuL9m
+< et03iuRTGtgh/lmWKnzyjA==
+---
+> UOylRL7RB/7HQxeID+d4EieuMDAlxDBaS6nBlfstxl9xfM6SBZukrKNNxSMus+Dt
+> Yp/4D/3YWUn0fK9aqRAOY8IxjTTJpysdK5Imug/L3eD1LwRcmonWipc+juVd15ed
+> +mYTgjnUw66v40+A0knxjeUt2ddGYUWDXPYfoDYvZwIvGwlnY54oBNDjA+wQY2Ys
+> qbHOQwjtOQ66HTpj2JaJQlpM2/z4Xxf9WdI/ZRzZeZAZV2XFdPba1SmdkQY/ZFzg
+> 50EgE8DRCRh2kGrs2Ffr12vygCUdhPhZeCS5eAgKTo3S3X9qw2XyqAC6rGHXjWLw
+> UX04TUjx+P3XjJQLzDj0nA==
+diff -bBr net_origin/tools/quic/quic_simple_server_bin.cc net_log_classifier/tools/quic/quic_simple_server_bin.cc
+25a26
+> #include "net/third_party/quic/core/congestion_control/loss_classify/random_forest/random_forest.h"
+46a48,51
+> //static quic::RandomForest& randomForest = *new quic::RandomForest();
+> //typedef std::vector<quic::DecisionTree*> Forest;
+> //Forest quic::RandomForest::trees(quic::RandomForest::readJsonToTrees());
+> 
+47a53,58
+>   quic::RandomForest forest;
+>   //Forest trees = randomForest.readJsonToTrees();  
+>   //QUIC_VLOG(-16) <<"1trees' size:"<<forest.trees.size();
+>   //forest.trees = forest.readJsonToTrees();
+>   //std::cout<<"2trees' size:"<<forest.trees.size()<<std::endl;
+> 
